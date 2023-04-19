@@ -1,0 +1,99 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Printer
+{
+    public string NhaSanXuat { get; set; }
+    public double Gia { get; set; }
+
+    public Printer(string nhasanxuat, double gia)
+    {
+        NhaSanXuat = nhasanxuat;
+        Gia = gia;
+    }
+
+    public virtual void Input()
+    {
+        Console.Write("NhaSanXuat: ");
+        NhaSanXuat = Console.ReadLine();
+        Console.Write("Gia: ");
+        Gia = double.Parse(Console.ReadLine());
+    }
+
+    public virtual void Output()
+    {
+        Console.WriteLine($"NhaSanXuat: {NhaSanXuat}, Gia: {Gia}");
+    }
+}
+
+class LaserPrinter : Printer
+{
+    public string DoPhanGiai { get; set; }
+
+    public LaserPrinter(string nhasanxuat, double price, string dophangiai)
+        : base(nhasanxuat, price)
+    {
+        DoPhanGiai = dophangiai;
+    }
+
+    public override void Input()
+    {
+        base.Input();
+        Console.Write("DoPhanGiai: ");
+        DoPhanGiai = Console.ReadLine();
+    }
+
+    public override void Output()
+    {
+        base.Output();
+        Console.WriteLine($"DoPhanGiai: {DoPhanGiai}");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<LaserPrinter> printers = new List<LaserPrinter>();
+        int n;
+
+        Console.Write("So luong layser printer: ");
+        n = int.Parse(Console.ReadLine());
+
+        for (int i = 0; i < n; i++)
+        {
+            LaserPrinter printer = new LaserPrinter("", 0, "");
+            printer.Input();
+            printers.Add(printer);
+        }
+
+        Console.WriteLine("Danh sach laser printers:");
+        foreach (LaserPrinter printer in printers)
+        {
+            printer.Output();
+        }
+
+        LaserPrinter cheapestPrinter = printers.OrderBy(p => p.Gia).First();
+        LaserPrinter mostExpensivePrinter = printers.OrderByDescending(p => p.Gia).First();
+
+        Console.WriteLine($"Cheapest printer: {cheapestPrinter.NhaSanXuat}, Gia: {cheapestPrinter.Gia}");
+        Console.WriteLine($"Most expensive printer: {mostExpensivePrinter.NhaSanXuat}, Gia: {mostExpensivePrinter.Gia}");
+
+        Console.Write("Danh sach may in theo ten hang san xuat: ");
+        string manufacturerFilter = Console.ReadLine();
+        List<LaserPrinter> filteredPrinters = printers.Where(p => p.NhaSanXuat.Equals(manufacturerFilter)).ToList();
+        Console.WriteLine($"Danh sach laser printers tu {manufacturerFilter}:");
+        foreach (LaserPrinter printer in filteredPrinters)
+        {
+            printer.Output();
+        }
+
+        List<LaserPrinter> sortedPrinters = printers.OrderBy(p => p.Gia).ToList();
+        Console.WriteLine("Danh sach laser printers sap xep theo gia:");
+        foreach (LaserPrinter printer in sortedPrinters)
+        {
+            printer.Output();
+        }
+    }
+}

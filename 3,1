@@ -1,0 +1,108 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+class Xe
+{
+    public string BienSo { get; set; }
+    public int NamSanXuat { get; set; }
+    public float Gia { get; set; }
+
+    public Xe(string bienSo, int namSanXuat, float gia)
+    {
+        BienSo = bienSo;
+        NamSanXuat = namSanXuat;
+        Gia = gia;
+    }
+
+    public Xe()
+    {
+    }
+
+    public virtual void Nhap()
+    {
+        Console.Write("Nhap bien so: ");
+        BienSo = Console.ReadLine();
+        Console.Write("Nhap nam san xuat: ");
+        NamSanXuat = int.Parse(Console.ReadLine());
+        Console.Write("Nhap gia: ");
+        Gia = float.Parse(Console.ReadLine());
+    }
+
+    public virtual void Xuat()
+    {
+        Console.WriteLine($"Bien so: {BienSo}, Nam san xuat: {NamSanXuat}, Gia: {Gia} trieu dong");
+    }
+}
+
+class XeCon : Xe
+{
+    public int SoChoNgoi { get; set; }
+    public string LoaiXe { get; set; }
+
+    public XeCon(string bienSo, int namSanXuat, float gia, int soChoNgoi, string loaiXe)
+        : base(bienSo, namSanXuat, gia)
+    {
+        SoChoNgoi = soChoNgoi;
+        LoaiXe = loaiXe;
+    }
+
+    public XeCon()
+    {
+    }
+
+    public override void Nhap()
+    {
+        base.Nhap();
+        Console.Write("Nhap so cho ngoi: ");
+        SoChoNgoi = int.Parse(Console.ReadLine());
+        Console.Write("Nhap loai xe (sedan/SUV/ban tai): ");
+        LoaiXe = Console.ReadLine();
+    }
+
+    public override void Xuat()
+    {
+        base.Xuat();
+        Console.WriteLine($"So cho ngoi: {SoChoNgoi}, Loai xe: {LoaiXe}");
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.Write("Nhap so luong xe con: ");
+        int n = int.Parse(Console.ReadLine());
+        List<XeCon> listXeCon = new List<XeCon>();
+        for (int i = 0; i < n; i++)
+        {
+            XeCon xeCon = new XeCon();
+            xeCon.Nhap();
+            listXeCon.Add(xeCon);
+        }
+
+        foreach (var xeCon in listXeCon)
+        {
+            xeCon.Xuat();
+        }
+        var xeGiaThapNhat = listXeCon.OrderBy(x => x.Gia).FirstOrDefault();
+        Console.WriteLine($"Xe co gia thap nhat: {xeGiaThapNhat.BienSo}, gia: {xeGiaThapNhat.Gia} trieu dong");
+        var xeGiaCaoNhat = listXeCon.OrderByDescending(x => x.Gia).FirstOrDefault();
+        Console.WriteLine($"Xe co gia cao nhat: {xeGiaCaoNhat.BienSo}, gia: {xeGiaCaoNhat.Gia} trieu dong");
+
+        Console.Write("Nhap 2 chu so dau bien so: ");
+        string chuSoDau = Console.ReadLine();
+        var listXeTrongTinh = listXeCon.Where(x => x.BienSo.StartsWith(chuSoDau));
+        Console.WriteLine($"Danh sach xe trong tinh: {chuSoDau}");
+        foreach (var xeCon in listXeTrongTinh)
+        {
+            xeCon.Xuat();
+        }
+
+        var listXeSapXep = listXeCon.OrderBy(x => x.NamSanXuat);
+        Console.WriteLine("Danh sach xe sau khi sap xep:");
+        foreach (var xeCon in listXeSapXep)
+        {
+            xeCon.Xuat();
+        }
+    }
+}

@@ -1,0 +1,94 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace QuanLyNhanVien
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            List<NhanVien> NhanVien = new List<NhanVien>();
+            Console.Write("Nhap so nhan vien: ");
+            int n = int.Parse(Console.ReadLine());
+            for (int i = 0; i < n; i++)
+            {
+                Console.Write("Nhap ten nhan vien: ");
+                string name = Console.ReadLine();
+                Console.Write("Nhap ngay sinh nhan vien (dd/MM/yyyy): ");
+                DateTime dob = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", null);
+                Console.Write("Nhap loai nhan vien (1 Nhan vien van phong, 2 Nhan vien san xuat): ");
+                int type = int.Parse(Console.ReadLine());
+                if (type == 1)
+                {
+                    Console.Write("Nhap so ngay lam viec: ");
+                    int days = int.Parse(Console.ReadLine());
+                    NhanVien.Add(new Nhanvienvanphong(name, dob, days));
+                }
+                else if (type == 2)
+                {
+                    Console.Write("Nhap so luong san pham: ");
+                    int products = int.Parse(Console.ReadLine());
+                    NhanVien.Add(new Nhanviensanxuat(name, dob, products));
+                }
+            }
+            Console.WriteLine();
+            Console.WriteLine("Danh sach nhan vien:");
+            Console.WriteLine("{0,-20}{1,-15}{2,-15}", "Ten", "Ngay sinh", "Luong");
+            foreach (NhanVien emp in NhanVien)
+            {
+                Console.WriteLine("{0,-20}{1,-15:dd/MM/yyyy}{2,-15:N0}", emp.Ten, emp.Ngaysinh, emp.Luong);
+            }
+            Console.WriteLine();
+            Console.WriteLine("Sap xep danh sach nhan vien theo Luong:");
+            Console.WriteLine("{0,-20}{1,-15}{2,-15}", "Ten", "Ngay sinh", "Luong");
+            foreach (NhanVien emp in NhanVien.OrderByDescending(e => e.Luong))
+            {
+                Console.WriteLine("{0,-20}{1,-15:dd/MM/yyyy}{2,-15:N0}", emp.Ten, emp.Ngaysinh, emp.Luong);
+            }
+        }
+    }
+
+    class NhanVien
+    {
+        public string Ten { get; set; }
+        public DateTime Ngaysinh { get; set; }
+        public virtual int Luong { get; }
+
+        public NhanVien(string name, DateTime dob)
+        {
+            Ten = name;
+            Ngaysinh  = dob;
+        }
+    }
+
+    class Nhanvienvanphong : NhanVien
+    {
+        public int WorkingDays { get; set; }
+
+        public override int Luong
+        {
+            get { return WorkingDays * 100000; }
+        }
+
+        public Nhanvienvanphong(string name, DateTime dob, int days) : base(name, dob)
+        {
+            WorkingDays = days;
+        }
+    }
+
+    class Nhanviensanxuat : NhanVien
+    {
+        public int Products { get; set; }
+
+        public override int Luong
+        {
+            get { return 2000000 + Products * 5000; }
+        }
+
+        public Nhanviensanxuat(string name, DateTime dob, int products) : base(name, dob)
+        {
+            Products = products;
+        }
+    }
+}
